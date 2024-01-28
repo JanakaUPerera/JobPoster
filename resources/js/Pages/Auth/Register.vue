@@ -1,32 +1,56 @@
 <script setup>
-import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+    import GuestLayout from '@/Layouts/GuestLayout.vue';
+    import InputError from '@/Components/InputError.vue';
+    import InputLabel from '@/Components/InputLabel.vue';
+    import PrimaryButton from '@/Components/PrimaryButton.vue';
+    import TextInput from '@/Components/TextInput.vue';
+    import {ref} from 'vue';
+    import {Head, Link, useForm,} from '@inertiajs/vue3';
 
-const form = useForm({
-    name: '',
-    email: '',
-    password: '',
-    password_confirmation: '',
-});
-
-const submit = () => {
-    form.post(route('register'), {
-        onFinish: () => form.reset('password', 'password_confirmation'),
+    const form = useForm({
+        name: '',
+        email: '',
+        password: '',
+        password_confirmation: '',
+        userType: 0,
     });
-};
+
+    const submit = () => {
+        form.post(route('register'), {
+            onFinish: () => form.reset('password', 'password_confirmation'),
+        });
+    };
+
+    const userTypeString = ref('');
+
+    function userTypeChooser(type) {
+        switch (type) {
+            case 1:
+                userTypeString.value = 'I am an Employer';
+                form.userType = 1;
+                break;
+            case 2:
+                userTypeString.value = 'I am a Candidate';
+                form.userType = 2;
+                break;
+        }
+    }
 </script>
 
 <template>
     <GuestLayout>
-        <Head title="Register" />
-
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="name" value="Name" />
+        <Head title="Register"/>
+        <div v-if="userTypeString==''" class="container">
+            <div class="flex justify-content-between">
+                <button type="button" class="btn btn-primary" @click="userTypeChooser(1)">I am an Employer</button>
+                <button type="button" class="btn btn-secondary" @click="userTypeChooser(2)">I am a Candidate</button>
+            </div>
+        </div>
+        <form v-if="userTypeString!=''" @submit.prevent="submit">
+            <h3 class="text-center">{{userTypeString}}</h3>
+            <TextInpuit name="userType" type="hidden" v-model="form.userType"/>
+            <div class="mt-4">
+                <InputLabel for="name" value="Name"/>
 
                 <TextInput
                     id="name"
@@ -38,11 +62,11 @@ const submit = () => {
                     autocomplete="name"
                 />
 
-                <InputError class="mt-2" :message="form.errors.name" />
+                <InputError class="mt-2" :message="form.errors.name"/>
             </div>
 
             <div class="mt-4">
-                <InputLabel for="email" value="Email" />
+                <InputLabel for="email" value="Email"/>
 
                 <TextInput
                     id="email"
@@ -53,11 +77,11 @@ const submit = () => {
                     autocomplete="username"
                 />
 
-                <InputError class="mt-2" :message="form.errors.email" />
+                <InputError class="mt-2" :message="form.errors.email"/>
             </div>
 
             <div class="mt-4">
-                <InputLabel for="password" value="Password" />
+                <InputLabel for="password" value="Password"/>
 
                 <TextInput
                     id="password"
@@ -68,11 +92,11 @@ const submit = () => {
                     autocomplete="new-password"
                 />
 
-                <InputError class="mt-2" :message="form.errors.password" />
+                <InputError class="mt-2" :message="form.errors.password"/>
             </div>
 
             <div class="mt-4">
-                <InputLabel for="password_confirmation" value="Confirm Password" />
+                <InputLabel for="password_confirmation" value="Confirm Password"/>
 
                 <TextInput
                     id="password_confirmation"
@@ -83,7 +107,7 @@ const submit = () => {
                     autocomplete="new-password"
                 />
 
-                <InputError class="mt-2" :message="form.errors.password_confirmation" />
+                <InputError class="mt-2" :message="form.errors.password_confirmation"/>
             </div>
 
             <div class="flex items-center justify-end mt-4">

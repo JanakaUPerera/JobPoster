@@ -7,10 +7,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use function Nette\Utils\match;
 
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
+
+    const TYPE_EMPLOYER = 'Employer';
+    const TYPE_CANDIDATE = 'Candidate';
 
     /**
      * The attributes that are mass assignable.
@@ -21,6 +25,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'user_type',
     ];
 
     /**
@@ -42,4 +47,12 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function userTypeToInteger()
+    {
+        return match($this->user_type){
+            self::TYPE_EMPLOYER => 1,
+            self::TYPE_CANDIDATE => 2
+        };
+    }
 }
