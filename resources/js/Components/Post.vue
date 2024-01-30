@@ -11,6 +11,9 @@
             <div v-if="props.post.can.update">
                 <button type="button" class="btn btn-warning btn-sm" @click.prevent="editPost(props.post)">Edit</button>
             </div>
+            <div v-if="props.post.already_applied">
+                <span class="badge bg-info">Applied</span>
+            </div>
         </div>
         <div class="card-body">
             <div v-if="!!props.post.about">
@@ -34,8 +37,8 @@
                 <hr>
             </div>
         </div>
-        <div v-if="props.can.application.create" class="card-footer flex justify-content-end">
-            <button class="btn btn-secondary">Apply</button>
+        <div v-if="props.can.application.create && !props.post.already_applied" class="card-footer flex justify-content-end">
+            <button class="btn btn-secondary" @click="applyForJob(props.post.id)">Apply</button>
         </div>
     </div>
 </template>
@@ -46,6 +49,10 @@
 
     function editPost(post){
         emit('onEdit', post);
+    }
+
+    function applyForJob(id) {
+        window.location = route('loadApplyForJob')+'?id='+id;
     }
 </script>
 

@@ -39,6 +39,11 @@ class Post extends Model
         return $this->belongsTo(User::class,'poster_id','id');
     }
 
+    public function applications()
+    {
+        return $this->hasMany(Application::class,'post_id','id');
+    }
+
     public function statusToInteger()
     {
         return match($this->status){

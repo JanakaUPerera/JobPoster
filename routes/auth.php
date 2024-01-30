@@ -10,6 +10,8 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ApplicationController;
+use App\Http\Controllers\JobCategoryController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -63,4 +65,10 @@ Route::middleware('auth')->group(function () {
         ->can('create',\App\Models\Post::class);
     Route::post('create_post',[PostController::class,'createPost'])->name('createPost');
     Route::post('update_post',[PostController::class,'updatePost'])->name('updatePost');
+
+    Route::get('load_apply_for_job',[ApplicationController::class,'loadApplyForJob'])->name('loadApplyForJob')
+        ->can('create',\App\Models\Application::class);
+    Route::post('create_application',[ApplicationController::class,'createApplication'])->name('createApplication');
+
+    Route::resource('jobCategory', JobCategoryController::class);
 });

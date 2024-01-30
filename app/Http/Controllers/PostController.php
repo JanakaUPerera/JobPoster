@@ -15,6 +15,10 @@ class PostController extends Controller
     {
         $posts = Post::paginate(2)->through(function ($post) {
             return array_merge($post->toArray(), [
+                'already_applied' => function () use($post){
+                    $application = $post->applications->where('applicant_id', Auth::id())->first();
+                    return !empty($application);
+                },
                 'can' => [
                     'update' => Auth::user()->can('update', [Post::class, $post])
                 ]
